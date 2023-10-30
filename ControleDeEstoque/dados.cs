@@ -25,14 +25,13 @@ namespace ControleDeEstoque
                    "Password=" + senha + ";";
         }
 
-        //private static string connectionString = "Server=localhost;Database=luis;User Id=root;Password=;";
+        
 
         /*
         * CRIA O OBJETO DATATABLE
         */
         public static Boolean criarDataTable(string sql, DataTable tableDados)
         {
-            
 
             // declarar e instanciar o objeto de conexao com o banco
             MySqlConnection conexao = new MySqlConnection(stringConexao());
@@ -74,6 +73,9 @@ namespace ControleDeEstoque
                 return false;
             }
         }
+
+
+
 
     }
 }

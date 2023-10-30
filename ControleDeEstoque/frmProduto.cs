@@ -311,7 +311,7 @@ namespace ControleDeEstoque
                     DRdados.Close();
                     return true;
 
-                }
+               }
                 else
                 {
                     MessageBox.Show("Não há registros para editar!");
