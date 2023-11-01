@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ControleDeEstoque
 {
-    internal class Produtos
+    internal class Produto
     {
 
         // Atributos
@@ -18,7 +19,7 @@ namespace ControleDeEstoque
         private float imposto;
 
         // Construtor
-        public Produtos(string nomeProduto,string unidade,float preco,float imposto) { 
+        public Produto(string nomeProduto,string unidade,float preco,float imposto) { 
             this.nomeProduto = nomeProduto;
             this.unidade = unidade;
             this.preco = preco;
@@ -48,6 +49,7 @@ namespace ControleDeEstoque
             get { return imposto; }
             set { imposto = value; }
         }
+
 
 
     }

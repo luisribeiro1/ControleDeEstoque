@@ -197,6 +197,7 @@
             txtImposto.Name = "txtImposto";
             txtImposto.Size = new Size(123, 23);
             txtImposto.TabIndex = 7;
+            txtImposto.TextAlign = HorizontalAlignment.Right;
             txtImposto.KeyPress += txtImposto_KeyPress;
             // 
             // label4
@@ -214,6 +215,8 @@
             txtPreco.Name = "txtPreco";
             txtPreco.Size = new Size(123, 23);
             txtPreco.TabIndex = 5;
+            txtPreco.TextAlign = HorizontalAlignment.Right;
+            txtPreco.TextChanged += txtPreco_TextChanged;
             txtPreco.KeyPress += txtPreco_KeyPress;
             // 
             // label3

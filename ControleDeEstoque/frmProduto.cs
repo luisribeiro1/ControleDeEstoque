@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ControleDeEstoque
 {
@@ -15,6 +16,8 @@ namespace ControleDeEstoque
     {
 
         private string acao = "";
+        private string sql = "";
+        Dados dados = new Dados();
 
         public frmProduto()
         {
@@ -35,15 +38,14 @@ namespace ControleDeEstoque
 
         public Boolean Grid()
         {
-            string sql = "SELECT idProduto, nomeProduto, unidade, preco, imposto FROM produtos";
-            DataTable TabelaDados = new DataTable();
+            sql = "SELECT idProduto, nomeProduto, unidade, preco, imposto FROM produtos";
 
             try
             {
-                // obter a tabela com os dados necessarios
-                dados.criarDataTable(sql, TabelaDados);
-                // associar o tabledata ao grid
-                dataGridView1.DataSource = TabelaDados;
+
+                DataTable dt = dados.Consulta(sql);
+                dataGridView1.DataSource = dt;
+
                 // retornar Verdadeiro, indicando que o carregamento de dados foi feito com sucesso
                 return true;
             }
@@ -88,32 +90,26 @@ namespace ControleDeEstoque
             }
 
             string? nome = dataGridView1.CurrentRow.Cells["nomeProduto"].Value.ToString();
+            string? idProduto = dataGridView1.CurrentRow.Cells["idProduto"].Value.ToString();
 
             // solicitar a confirmacao da exclusao
             if (MessageBox.Show("Confirma exclusão do registro de " + nome + "?", "Confirmação",
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
 
-                MySqlConnection ConexaoSQL = new MySqlConnection(dados.stringConexao());
-
-                MySqlCommand ComandSQL = new MySqlCommand("DELETE FROM produtos WHERE (idProduto = @idProduto)", ConexaoSQL);
-                ComandSQL.Parameters.AddWithValue("@idProduto", dataGridView1.CurrentRow.Cells["idProduto"].Value.ToString());
+                sql = "DELETE FROM produtos WHERE idProduto = " + idProduto;
 
                 try
                 {
 
-                    ConexaoSQL.Open();
-                    ComandSQL.ExecuteNonQuery();
+                    dados.SQLCommand(sql);
                     Grid();
                 }
                 catch (Exception ex)
                 {
                     uteis.msgErro("Houve um problema na exclusão" + ex.Message);
                 }
-                finally
-                {
-                    ConexaoSQL.Close();
-                }
+
             }
         }
 
@@ -154,19 +150,13 @@ namespace ControleDeEstoque
             double.TryParse(txtImposto.Text, out double imposto);
 
 
-            MySqlConnection ConexaoSQL = new MySqlConnection(dados.stringConexao());
             MySqlCommand ComandSQL = new MySqlCommand();
 
 
             if (acao == "novo")
             {
-
-                ComandSQL = new MySqlCommand("INSERT INTO produtos (nomeProduto,unidade,preco,imposto) " +
-                    "VALUES (@nomeProduto,@unidade,@preco,@imposto)", ConexaoSQL);
-                ComandSQL.Parameters.AddWithValue("@nomeProduto", nomeProduto);
-                ComandSQL.Parameters.AddWithValue("@unidade", unidade);
-                ComandSQL.Parameters.AddWithValue("@preco", preco);
-                ComandSQL.Parameters.AddWithValue("@imposto", imposto);
+                sql = string.Format("INSERT INTO produtos (nomeProduto,unidade,preco,imposto) " +
+                    "VALUES ('{0}','{1}',{2},{3})", nomeProduto, unidade, preco, imposto);
 
             }
             else
@@ -174,25 +164,14 @@ namespace ControleDeEstoque
 
                 int.TryParse(txtIdProduto.Text, out int idProduto);
 
-                ComandSQL = new MySqlCommand("UPDATE produtos SET " +
-                    "nomeProduto=@nomeProduto," +
-                    "unidade=@unidade," +
-                    "preco=@preco," +
-                    "imposto=@imposto " +
-                    "WHERE idProduto=@idProduto", ConexaoSQL);
-                ComandSQL.Parameters.AddWithValue("@nomeProduto", nomeProduto);
-                ComandSQL.Parameters.AddWithValue("@unidade", unidade);
-                ComandSQL.Parameters.AddWithValue("@preco", preco);
-                ComandSQL.Parameters.AddWithValue("@imposto", imposto);
-                ComandSQL.Parameters.AddWithValue("@idProduto", idProduto);
+                sql = string.Format("UPDATE produtos SET nomeProduto='{0}',unidade='{1}',preco={2},imposto={3} " +
+                    "WHERE idProduto={4}", nomeProduto, unidade, preco, imposto, idProduto);
 
             }
 
             try
             {
-                ConexaoSQL.Open();
-                ComandSQL.ExecuteNonQuery();
-
+                dados.SQLCommand(sql);
                 Grid();
                 uteis.msgInformacao("Registro salvo com sucesso.");
                 botoes(1);
@@ -201,7 +180,6 @@ namespace ControleDeEstoque
             }
             finally
             {
-                ConexaoSQL.Close();
                 limparCampos();
             }
 
@@ -277,51 +255,41 @@ namespace ControleDeEstoque
 
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            
+
             botoes(2);
             limparCampos();
             tabControle.SelectedTab = tabForm;
             acao = "editar";
             txtNomeProduto.Focus();
 
-            CarregarDados(dataGridView1.CurrentRow.Cells["idProduto"].Value.ToString());
+            var idProduto = dataGridView1.CurrentRow.Cells["idProduto"].Value;
+            if (idProduto != null)
+            {
+
+                sql = "SELECT idProduto, nomeProduto, unidade, preco, imposto " +
+                    "FROM produtos " +
+                    "WHERE idProduto = " + idProduto;
+
+                var dt = dados.Consulta(sql);
+                if (dt.Rows.Count > 0)
+                {
+                    txtIdProduto.Text = dt.Rows[0]["idProduto"].ToString();
+                    txtNomeProduto.Text = dt.Rows[0]["nomeProduto"].ToString();
+                    cboUnidade.SelectedItem = dt.Rows[0]["unidade"].ToString();
+                    txtPreco.Text = dt.Rows[0]["preco"].ToString();
+                    txtImposto.Text = dt.Rows[0]["imposto"].ToString();
+                }
+
+            }
 
         }
 
-        public Boolean CarregarDados(string pID)
+        private void txtPreco_TextChanged(object sender, EventArgs e)
         {
-            MySqlConnection ConexaoSQL = new MySqlConnection(dados.stringConexao());
-            MySqlCommand ComandSQL = new MySqlCommand("SELECT idProduto, nomeProduto, unidade, preco, imposto " +
-                                            "FROM produtos " +
-                                            "WHERE idProduto = '" + pID + "'", ConexaoSQL);
-            MySqlDataReader DRdados;
-            try
+            if (decimal.TryParse(txtPreco.Text, out decimal valor))
             {
-                ConexaoSQL.Open();
-                DRdados = ComandSQL.ExecuteReader();
-                if (DRdados.Read()) // verifica se algum dado foi retornado
-                {
-
-                    txtIdProduto.Text = DRdados.GetInt32(0).ToString();
-                    txtNomeProduto.Text = DRdados.GetString(1);
-                    cboUnidade.SelectedItem = DRdados.GetString(2);
-                    txtPreco.Text = DRdados.GetString(3);
-                    txtImposto.Text = DRdados.GetString(4);
-
-                    DRdados.Close();
-                    return true;
-
-               }
-                else
-                {
-                    MessageBox.Show("Não há registros para editar!");
-                    DRdados.Close();
-                    return false;
-                }
-            }
-            finally
-            {
-                ConexaoSQL.Close();
+                // Formatando o valor como uma moeda
+                txtPreco.Text = valor.ToString("C");
             }
         }
     }
