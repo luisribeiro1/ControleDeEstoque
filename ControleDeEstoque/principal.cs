@@ -28,7 +28,7 @@ namespace ControleDeEstoque
 
         private void sairToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DialogResult confirma = uteis.msgConfirmacao("Deseja fechar o sistema?");
+            DialogResult confirma = Uteis.msgConfirmacao("Deseja fechar o sistema?");
             if (confirma == DialogResult.OK)
             {
                 Application.Exit();

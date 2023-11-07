@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ControleDeEstoque
 {
-    internal class uteis
+    internal class Uteis
     {
 
         // MENSAGEM DE ERRO
@@ -34,7 +34,7 @@ namespace ControleDeEstoque
                             "Informação",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
-            
+
         }
 
         // MENSAGEM DE CONFIRMAÇÃO
@@ -45,6 +45,14 @@ namespace ControleDeEstoque
                             MessageBoxButtons.OKCancel,
                             MessageBoxIcon.Question);
 
+        }
+
+        public static void ValidarEntradaNumerica(KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != (char)8)
+            {
+                e.Handled = true;
+            }
         }
     }
 }
