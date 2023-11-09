@@ -14,69 +14,86 @@ namespace ControleDeEstoque
     {
 
         // Atributos
-        private int idProduto;
-        private string nomeProduto;
-        private string unidade;
-        private float preco;
-        private float imposto;
+        //private int idProduto;
+        //private string? nomeProduto;
+        //private string? unidade;
+        //private double preco;
+        //private double imposto;
 
         // Construtor
-        public Produto(string nomeProduto,string unidade,float preco,float imposto) { 
-            this.nomeProduto = nomeProduto;
-            this.unidade = unidade;
-            this.preco = preco;
-            this.imposto = imposto;
-        }
+        //public Produto()
+        //{
 
-        public string NomeProduto
+        //}
+        //public Produto(string nomeProduto,string unidade,double preco,double imposto) { 
+        //    this.nomeProduto = nomeProduto;
+        //    this.unidade = unidade;
+        //    this.preco = preco;
+        //    this.imposto = imposto;
+        //}
+
+        public int IdProduto { get; set; }
+        public string? NomeProduto { get; set; }
+        public string? Unidade { get; set; }
+        public double Preco { get; set; }
+        public double Imposto { get; set; }
+
+
+        //public int IdProduto        {
+        //    get { return idProduto; }
+        //    set { idProduto = value; }
+        //}
+
+        //public string NomeProduto
+        //{
+        //    get { return nomeProduto; }
+        //    set { nomeProduto = value; }
+        //}
+
+        //public string Unidade
+        //{
+        //    get { return unidade; }
+        //    set { unidade = value; }
+        //}
+
+        //public double Preco
+        //{
+        //    get { return preco; }
+        //    set { preco = value; }
+        //}
+
+        //public double Imposto
+        //{
+        //    get { return imposto; }
+        //    set { imposto = value; }
+        //}
+
+        public void SalvarProduto()
         {
-            get { return nomeProduto; }
-            set { nomeProduto = value; }
+
         }
-
-        public string Unidade
-        {
-            get { return unidade; }
-            set { unidade = value; }
-        }
-
-        public float Preco
-        {
-            get { return preco; }
-            set { preco = value; }
-        }
-
-        public float Imposto
-        {
-            get { return imposto; }
-            set { imposto = value; }
-        }
-
-
         public void GetProduto(int idProduto)
         {
             string sql = $"SELECT idProduto, nomeProduto, unidade, preco, imposto " +
                     "FROM produtos " +
-                    "WHERE idProduto = {idProduto}";
+                    "WHERE idProduto = " + idProduto;
 
             MySqlConnection conexao = new MySqlConnection(Conexao.stringConnection);
             conexao.Open();
 
             var myCommand = new MySqlCommand(sql, conexao);
             var dr = myCommand.ExecuteReader();
-            dr.Read();
-
-            dr.Close();
 
             if (dr.Read())
             {
-                this.idProduto = Convert.ToInt32(dr["idProduto"]);
-                this.nomeProduto = dr["nomeProduto"].ToString();
-                this.unidade = dr["unidade"].ToString();
-                this.preco = Convert.ToDecimal(dr["preco"]);
-                this.imposto = Convert.ToDecimal(dr["imposto"]);
+                this.IdProduto = Convert.ToInt32(dr["idProduto"]);
+                this.NomeProduto = dr["nomeProduto"].ToString();
+                this.Unidade = dr["unidade"].ToString();
+                this.Preco = Convert.ToDouble(dr["preco"]);
+                this.Imposto = Convert.ToDouble(dr["imposto"]);
             }
 
+            dr.Close();
 
         }
 

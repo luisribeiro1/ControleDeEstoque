@@ -1785,19 +1785,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\luis.cribeiro\\.nuget\\packages\\": {}
+    "C:\\Users\\luisr\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\luis.cribeiro\\source\\ControleDeEstoque\\ControleDeEstoque\\ControleDeEstoque.csproj",
+      "projectUniqueName": "D:\\csharp\\controle_de_estoque\\ControleDeEstoque\\ControleDeEstoque.csproj",
       "projectName": "ControleDeEstoque",
-      "projectPath": "C:\\Users\\luis.cribeiro\\source\\ControleDeEstoque\\ControleDeEstoque\\ControleDeEstoque.csproj",
-      "packagesPath": "C:\\Users\\luis.cribeiro\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\luis.cribeiro\\source\\ControleDeEstoque\\ControleDeEstoque\\obj\\",
+      "projectPath": "D:\\csharp\\controle_de_estoque\\ControleDeEstoque\\ControleDeEstoque.csproj",
+      "packagesPath": "C:\\Users\\luisr\\.nuget\\packages\\",
+      "outputPath": "D:\\csharp\\controle_de_estoque\\ControleDeEstoque\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\luis.cribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\luisr\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1847,7 +1847,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }

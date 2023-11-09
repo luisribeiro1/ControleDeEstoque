@@ -19,6 +19,7 @@ namespace ControleDeEstoque
         private string acao = "";
         private string sql = "";
         Dados dados = new Dados();
+        Produto produto = new Produto();
 
         public frmProduto()
         {
@@ -138,52 +139,59 @@ namespace ControleDeEstoque
                 return;
             }
 
-            string nomeProduto = txtNomeProduto.Text;
-            string? unidade = cboUnidade.SelectedItem.ToString();
+            produto.NomeProduto = txtNomeProduto.Text;
+            produto.Unidade = cboUnidade.SelectedItem.ToString();
+            produto.Preco = Convert.ToDouble(txtPreco.Text);
+            produto.Imposto = Convert.ToDouble(txtImposto.Text);
 
-            string precoTexto = txtPreco.Text;
-            precoTexto = precoTexto.Replace(",", ".");
+            produto.SaveProduto();
 
-            string impostoTexto = txtImposto.Text;
-            impostoTexto = impostoTexto.Replace(",", ".");
+            //string nomeProduto = txtNomeProduto.Text;
+            //string? unidade = cboUnidade.SelectedItem.ToString();
 
-            //Double.TryParse(txtPreco.Text, out double preco);
-            //Double.TryParse(txtImposto.Text, out double imposto);
+            //string precoTexto = txtPreco.Text;
+            //precoTexto = precoTexto.Replace(",", ".");
 
-            MySqlCommand ComandSQL = new MySqlCommand();
+            //string impostoTexto = txtImposto.Text;
+            //impostoTexto = impostoTexto.Replace(",", ".");
+
+            ////Double.TryParse(txtPreco.Text, out double preco);
+            ////Double.TryParse(txtImposto.Text, out double imposto);
+
+            //MySqlCommand ComandSQL = new MySqlCommand();
 
 
-            if (acao == "novo")
-            {
-                sql = string.Format("INSERT INTO produtos (nomeProduto,unidade,preco,imposto) " +
-                    "VALUES ('{0}','{1}','{2}','{3}')", nomeProduto, unidade, precoTexto, impostoTexto);
+            //if (acao == "novo")
+            //{
+            //    sql = string.Format("INSERT INTO produtos (nomeProduto,unidade,preco,imposto) " +
+            //        "VALUES ('{0}','{1}','{2}','{3}')", nomeProduto, unidade, precoTexto, impostoTexto);
 
-                //sql = $"INSERT INTO produtos (nomeProduto,unidade,preco,imposto) " +
-                //    "VALUES ({nomeProduto},{unidade},{precoTexto},{impostoTexto})";
-            }
-            else
-            {
+            //    //sql = $"INSERT INTO produtos (nomeProduto,unidade,preco,imposto) " +
+            //    //    "VALUES ({nomeProduto},{unidade},{precoTexto},{impostoTexto})";
+            //}
+            //else
+            //{
 
-                int.TryParse(txtIdProduto.Text, out int idProduto);
+            //    int.TryParse(txtIdProduto.Text, out int idProduto);
 
-                sql = string.Format("UPDATE produtos SET nomeProduto='{0}',unidade='{1}',preco='{2}',imposto='{3}' " +
-                    "WHERE idProduto={4}", nomeProduto, unidade, precoTexto, impostoTexto, idProduto);
+            //    sql = string.Format("UPDATE produtos SET nomeProduto='{0}',unidade='{1}',preco='{2}',imposto='{3}' " +
+            //        "WHERE idProduto={4}", nomeProduto, unidade, precoTexto, impostoTexto, idProduto);
 
-            }
+            //}
 
-            try
-            {
-                dados.SQLCommand(sql);
-                LoadGrid();
-                Uteis.msgInformacao("Registro salvo com sucesso.");
-                botoes(1);
+            //try
+            //{
+            //    dados.SQLCommand(sql);
+            //    LoadGrid();
+            //    Uteis.msgInformacao("Registro salvo com sucesso.");
+            //    botoes(1);
 
-                tabControle.SelectedTab = tabDados;
-            }
-            finally
-            {
-                limparCampos();
-            }
+            //    tabControle.SelectedTab = tabDados;
+            //}
+            //finally
+            //{
+            //    limparCampos();
+            //}
 
 
         }
@@ -262,19 +270,13 @@ namespace ControleDeEstoque
             if (idProduto != null)
             {
 
-                sql = "SELECT idProduto, nomeProduto, unidade, preco, imposto " +
-                    "FROM produtos " +
-                    "WHERE idProduto = " + idProduto;
+                produto.GetProduto(Convert.ToInt32(idProduto));
 
-                var dt = dados.Consulta(sql);
-                if (dt.Rows.Count > 0)
-                {
-                    txtIdProduto.Text = dt.Rows[0]["idProduto"].ToString();
-                    txtNomeProduto.Text = dt.Rows[0]["nomeProduto"].ToString();
-                    cboUnidade.SelectedItem = dt.Rows[0]["unidade"].ToString();
-                    txtPreco.Text = dt.Rows[0]["preco"].ToString();
-                    txtImposto.Text = dt.Rows[0]["imposto"].ToString();
-                }
+                txtIdProduto.Text = produto.IdProduto.ToString();
+                txtNomeProduto.Text = produto.NomeProduto.ToString();
+                cboUnidade.SelectedItem = produto.Unidade.ToString();
+                txtPreco.Text = produto.Preco.ToString("N2");
+                txtImposto.Text = produto.Imposto.ToString("N2");
 
             }
 
