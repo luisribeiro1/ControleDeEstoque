@@ -139,12 +139,40 @@ namespace ControleDeEstoque
                 return;
             }
 
+            if (txtIdProduto.Text != "")
+            {
+                int.TryParse(txtIdProduto.Text, out int idProduto);
+                produto.IdProduto = idProduto;
+            }
+
             produto.NomeProduto = txtNomeProduto.Text;
             produto.Unidade = cboUnidade.SelectedItem.ToString();
             produto.Preco = Convert.ToDouble(txtPreco.Text);
             produto.Imposto = Convert.ToDouble(txtImposto.Text);
 
-            produto.SaveProduto();
+
+            try { 
+                
+                produto.SalvarProduto();
+                
+                LoadGrid();
+                Uteis.msgInformacao("Registro salvo com sucesso.");
+                botoes(1);
+
+                tabControle.SelectedTab = tabDados;
+
+            }
+            catch (Exception ex)
+            {
+                Uteis.msgErro("Houve um problema: " + ex.Message);
+
+            }
+            finally
+            {
+                limparCampos();
+            }
+
+
 
             //string nomeProduto = txtNomeProduto.Text;
             //string? unidade = cboUnidade.SelectedItem.ToString();
@@ -196,7 +224,7 @@ namespace ControleDeEstoque
 
         }
 
-        private void btnCancelar_Click(object sender, EventArgs e)
+            private void btnCancelar_Click(object sender, EventArgs e)
         {
             limparCampos();
             botoes(1);

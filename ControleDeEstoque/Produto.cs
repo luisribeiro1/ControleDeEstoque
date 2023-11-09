@@ -70,8 +70,29 @@ namespace ControleDeEstoque
 
         public void SalvarProduto()
         {
+            string sql = "";
 
+            if (this.IdProduto > 0)
+            {
+                sql = "UPDATE produtos SET nomeProduto=@nomeProduto,unidade=@unidade,preco=@preco,imposto=@imposto WHERE idProduto=@idProduto";
+            }
+            else
+            {
+                sql = "INSERT INTO produtos (nomeProduto,unidade,preco,imposto) VALUES(@nomeProduto,@unidade,@preco,@imposto)";
+            }
+
+            MySqlConnection conexao = new MySqlConnection(Conexao.stringConnection);
+            conexao.Open();
+            var myCommand = new MySqlCommand(sql, conexao);
+            myCommand.Parameters.AddWithValue("@idProduto", this.IdProduto);
+            myCommand.Parameters.AddWithValue("@nomeProduto", this.NomeProduto);
+            myCommand.Parameters.AddWithValue("@unidade", this.Unidade);
+            myCommand.Parameters.AddWithValue("@preco", this.Preco);
+            myCommand.Parameters.AddWithValue("@imposto", this.Imposto);
+
+            myCommand.ExecuteNonQuery();
         }
+
         public void GetProduto(int idProduto)
         {
             string sql = $"SELECT idProduto, nomeProduto, unidade, preco, imposto " +
