@@ -124,7 +124,6 @@ namespace ControleDeEstoque
                 return;
             }
 
-
             if (txtPreco.Text == "")
             {
                 Uteis.msgErro("O campo \"Preço \" deve ser informado!");
@@ -150,10 +149,9 @@ namespace ControleDeEstoque
             produto.Preco = Convert.ToDouble(txtPreco.Text);
             produto.Imposto = Convert.ToDouble(txtImposto.Text);
 
+            try {
 
-            try { 
-                
-                produto.SalvarProduto();
+                produto.SalvarProduto(acao);
                 
                 LoadGrid();
                 Uteis.msgInformacao("Registro salvo com sucesso.");
@@ -172,59 +170,9 @@ namespace ControleDeEstoque
                 limparCampos();
             }
 
-
-
-            //string nomeProduto = txtNomeProduto.Text;
-            //string? unidade = cboUnidade.SelectedItem.ToString();
-
-            //string precoTexto = txtPreco.Text;
-            //precoTexto = precoTexto.Replace(",", ".");
-
-            //string impostoTexto = txtImposto.Text;
-            //impostoTexto = impostoTexto.Replace(",", ".");
-
-            ////Double.TryParse(txtPreco.Text, out double preco);
-            ////Double.TryParse(txtImposto.Text, out double imposto);
-
-            //MySqlCommand ComandSQL = new MySqlCommand();
-
-
-            //if (acao == "novo")
-            //{
-            //    sql = string.Format("INSERT INTO produtos (nomeProduto,unidade,preco,imposto) " +
-            //        "VALUES ('{0}','{1}','{2}','{3}')", nomeProduto, unidade, precoTexto, impostoTexto);
-
-            //    //sql = $"INSERT INTO produtos (nomeProduto,unidade,preco,imposto) " +
-            //    //    "VALUES ({nomeProduto},{unidade},{precoTexto},{impostoTexto})";
-            //}
-            //else
-            //{
-
-            //    int.TryParse(txtIdProduto.Text, out int idProduto);
-
-            //    sql = string.Format("UPDATE produtos SET nomeProduto='{0}',unidade='{1}',preco='{2}',imposto='{3}' " +
-            //        "WHERE idProduto={4}", nomeProduto, unidade, precoTexto, impostoTexto, idProduto);
-
-            //}
-
-            //try
-            //{
-            //    dados.SQLCommand(sql);
-            //    LoadGrid();
-            //    Uteis.msgInformacao("Registro salvo com sucesso.");
-            //    botoes(1);
-
-            //    tabControle.SelectedTab = tabDados;
-            //}
-            //finally
-            //{
-            //    limparCampos();
-            //}
-
-
         }
 
-            private void btnCancelar_Click(object sender, EventArgs e)
+        private void btnCancelar_Click(object sender, EventArgs e)
         {
             limparCampos();
             botoes(1);

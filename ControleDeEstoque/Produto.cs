@@ -68,11 +68,11 @@ namespace ControleDeEstoque
         //    set { imposto = value; }
         //}
 
-        public void SalvarProduto()
+        public void SalvarProduto(string acao)
         {
             string sql = "";
 
-            if (this.IdProduto > 0)
+            if (acao != "novo")
             {
                 sql = "UPDATE produtos SET nomeProduto=@nomeProduto,unidade=@unidade,preco=@preco,imposto=@imposto WHERE idProduto=@idProduto";
             }
