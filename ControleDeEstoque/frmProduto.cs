@@ -85,19 +85,17 @@ namespace ControleDeEstoque
             }
 
             string? nome = dataGridView1.CurrentRow.Cells["nomeProduto"].Value.ToString();
-            string? idProduto = dataGridView1.CurrentRow.Cells["idProduto"].Value.ToString();
 
+            var idProduto = dataGridView1.CurrentRow.Cells["idProduto"].Value;
             // solicitar a confirmacao da exclusao
             if (MessageBox.Show("Confirma exclusão do registro de " + nome + "?", "Confirmação",
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
 
-                sql = "DELETE FROM produtos WHERE idProduto = " + idProduto;
-
                 try
                 {
 
-                    dados.SQLCommand(sql);
+                    produto.ExcluirProduto(Convert.ToInt32(idProduto));
                     LoadGrid();
                 }
                 catch (Exception ex)

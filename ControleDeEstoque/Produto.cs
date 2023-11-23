@@ -13,25 +13,6 @@ namespace ControleDeEstoque
     internal class Produto
     {
 
-        // Atributos
-        //private int idProduto;
-        //private string? nomeProduto;
-        //private string? unidade;
-        //private double preco;
-        //private double imposto;
-
-        // Construtor
-        //public Produto()
-        //{
-
-        //}
-        //public Produto(string nomeProduto,string unidade,double preco,double imposto) { 
-        //    this.nomeProduto = nomeProduto;
-        //    this.unidade = unidade;
-        //    this.preco = preco;
-        //    this.imposto = imposto;
-        //}
-
         public int IdProduto { get; set; }
         public string? NomeProduto { get; set; }
         public string? Unidade { get; set; }
@@ -39,71 +20,38 @@ namespace ControleDeEstoque
         public double Imposto { get; set; }
 
 
-        //public int IdProduto        {
-        //    get { return idProduto; }
-        //    set { idProduto = value; }
-        //}
-
-        //public string NomeProduto
-        //{
-        //    get { return nomeProduto; }
-        //    set { nomeProduto = value; }
-        //}
-
-        //public string Unidade
-        //{
-        //    get { return unidade; }
-        //    set { unidade = value; }
-        //}
-
-        //public double Preco
-        //{
-        //    get { return preco; }
-        //    set { preco = value; }
-        //}
-
-        //public double Imposto
-        //{
-        //    get { return imposto; }
-        //    set { imposto = value; }
-        //}
-
         public void SalvarProduto(string acao)
         {
-            string sql = "";
+            string sql = (acao != "novo")
+                ? "UPDATE produtos SET nomeProduto=@nomeProduto,unidade=@unidade,preco=@preco,imposto=@imposto WHERE idProduto=@idProduto"
+                : "INSERT INTO produtos (nomeProduto,unidade,preco,imposto) VALUES(@nomeProduto,@unidade,@preco,@imposto)";
 
-            if (acao != "novo")
-            {
-                sql = "UPDATE produtos SET nomeProduto=@nomeProduto,unidade=@unidade,preco=@preco,imposto=@imposto WHERE idProduto=@idProduto";
-            }
-            else
-            {
-                sql = "INSERT INTO produtos (nomeProduto,unidade,preco,imposto) VALUES(@nomeProduto,@unidade,@preco,@imposto)";
-            }
 
             MySqlConnection conexao = new MySqlConnection(Conexao.stringConnection);
             conexao.Open();
-            var myCommand = new MySqlCommand(sql, conexao);
-            myCommand.Parameters.AddWithValue("@idProduto", this.IdProduto);
-            myCommand.Parameters.AddWithValue("@nomeProduto", this.NomeProduto);
-            myCommand.Parameters.AddWithValue("@unidade", this.Unidade);
-            myCommand.Parameters.AddWithValue("@preco", this.Preco);
-            myCommand.Parameters.AddWithValue("@imposto", this.Imposto);
+            var sqlCommand = new MySqlCommand(sql, conexao);
+            sqlCommand.Parameters.AddWithValue("@idProduto", this.IdProduto);
+            sqlCommand.Parameters.AddWithValue("@nomeProduto", this.NomeProduto);
+            sqlCommand.Parameters.AddWithValue("@unidade", this.Unidade);
+            sqlCommand.Parameters.AddWithValue("@preco", this.Preco);
+            sqlCommand.Parameters.AddWithValue("@imposto", this.Imposto);
 
-            myCommand.ExecuteNonQuery();
+            sqlCommand.ExecuteNonQuery();
         }
 
         public void GetProduto(int idProduto)
         {
             string sql = $"SELECT idProduto, nomeProduto, unidade, preco, imposto " +
                     "FROM produtos " +
-                    "WHERE idProduto = " + idProduto;
+                    "WHERE idProduto = @idProduto";
 
             MySqlConnection conexao = new MySqlConnection(Conexao.stringConnection);
             conexao.Open();
 
-            var myCommand = new MySqlCommand(sql, conexao);
-            var dr = myCommand.ExecuteReader();
+            var sqlCommand = new MySqlCommand(sql, conexao);
+            sqlCommand.Parameters.AddWithValue("@idProduto", idProduto);
+
+            var dr = sqlCommand.ExecuteReader();
 
             if (dr.Read())
             {
@@ -118,8 +66,34 @@ namespace ControleDeEstoque
 
         }
 
+        public void ExcluirProduto(int idProduto)
+        {
 
-        public static DataTable GetProdutos() {
+            string sql = "DELETE FROM produtos WHERE idProduto = @idProduto";
+
+            try
+            {
+                using (MySqlConnection conexao = new MySqlConnection(Conexao.stringConnection))
+                {
+                    conexao.Open();
+
+                    using (var sqlCommand = new MySqlCommand(sql, conexao))
+                    {
+                        sqlCommand.Parameters.AddWithValue("@idProduto", idProduto);
+                        sqlCommand.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
+        public static DataTable GetProdutos()
+        {
 
             string sql = "SELECT idProduto, nomeProduto, unidade, preco, imposto FROM produtos";
 
